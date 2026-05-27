@@ -1,3 +1,4 @@
+// trigger deploy
 export default async function handler(req, res) {
   try {
     const symbol = req.query.symbol || "2330.TW";
