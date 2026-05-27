@@ -1,25 +1,26 @@
-
 export default async function handler(req, res) {
   try {
-    const symbol = req.query.symbol || "2330.TW";
+    let symbol = req.query.symbol || "2330";
 
-    // ✅ 改用 quote API（不用 crumb）
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`;
+    // 自動去掉 .TW
+    symbol = symbol.replace(".TW", "");
 
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0"
-      }
-    });
+    const url = `https://api.finmindtrade.com/api/v4/data?dataset=TaiwanStockPrice&data_id=${symbol}&start_date=2024-01-01`;
 
+    const response = await fetch(url);
     const data = await response.json();
 
+    const last = data.data?.at(-1);
+
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200).json(data);
+
+    res.status(200).json({
+      symbol,
+      price: last?.close ?? null,
+      date: last?.date ?? null
+    });
 
   } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
+    res.status(500).json({ error: err.message });
   }
 }
