@@ -1,8 +1,10 @@
+
 export default async function handler(req, res) {
   try {
     const symbol = req.query.symbol || "2330.TW";
 
-    const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${symbol}?modules=financialData,summaryDetail,defaultKeyStatistics`;
+    // ✅ 改用 quote API（不用 crumb）
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`;
 
     const response = await fetch(url, {
       headers: {
@@ -21,4 +23,3 @@ export default async function handler(req, res) {
     });
   }
 }
-``
